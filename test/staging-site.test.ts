@@ -286,13 +286,13 @@ describe("the manifest's rules (unit: Foreman's O-159)", () => {
 });
 
 describe("the template's own configuration (unit: what CI copies into the manifest)", () => {
-  it("has a date and flags Foreman allows, and an empty list of required secrets at first", () => {
+  it("has a date and flags Foreman allows, and requires only the trial's TEST_SECRET", () => {
     const compatibility = readCompatibility(readFileSync("wrangler.jsonc", "utf8"));
     expect(compatibility.compatibilityFlags).toEqual([]);
     expect(compatibility.compatibilityDate >= "2025-04-01").toBe(true);
     expect(
       readRequiredSecrets(readFileSync("src/worker/required-secrets.json", "utf8")),
-    ).toEqual([]);
+    ).toEqual(["TEST_SECRET"]);
   });
 });
 

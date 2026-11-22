@@ -29,6 +29,8 @@ export interface Env {
    * when the Worker first uses it.
    */
   DB: unknown;
+  /** A made-up test secret, set with the Set project secret form; the Worker never reads it. */
+  TEST_SECRET: string;
 }
 
 /** The health answer Foreman's staging check requires. */

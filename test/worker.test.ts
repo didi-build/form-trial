@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import { parseWranglerJsonc } from "../scripts/lib/parse-wrangler-jsonc.mjs";
 import worker from "../src/worker/index.js";
 
-const env = { DB: {} };
+const env = { DB: {}, TEST_SECRET: "test-only-not-a-real-value" };
 const call = (path: string, method = "GET") =>
   worker.fetch(new Request(`https://my-app.didi.build${path}`, { method }), env);
 
