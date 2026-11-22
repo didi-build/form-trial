@@ -1,0 +1,12 @@
+schema_version: 1
+d1_tables: {}
+other_items:
+  - id: d1-db
+    binding: DB
+    whose: operational
+    data: the project's D1 database as a store; its tables and columns are declared under d1_tables
+    purpose: the Worker's database, behind /api
+    storage: D1
+    processors: [Cloudflare]
+    retention: per table, as declared under d1_tables
+    source: wrangler.jsonc

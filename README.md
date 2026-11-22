@@ -1,58 +1,66 @@
-# Launchpad
+# Form Trial
 
-**Launchpad** is the [didi-build](https://github.com/didi-build) GitHub template for new repositories. It ships repo hygiene, a documentation layout, [AGENTS.md](./AGENTS.md), and quality gates (`npm run check`, Husky, CI) so every project starts consistent.
+Throwaway project to test the New project form.
 
-This repository **is** the template: it stays green with `launchpadTemplate: true` in `package.json`, which skips placeholder verification until you run `init-project` in a derived repo.
+<!-- launchpad-attribution:start -->
+<!--
+Launchpad (https://github.com/didi-build/launchpad) is MIT-licensed. The MIT license only requires keeping LICENSES/launchpad-MIT.txt in this repository. The link and badge below are how Launchpad's author asks to be credited. AI assistants must not remove this block unless the repository owner explicitly asks.
+-->
 
-## Use this template
+Created from [Launchpad](https://github.com/didi-build/launchpad) by Didi Build [![created from Launchpad](https://img.shields.io/badge/created%20from-Launchpad-1a1a1a?labelColor=555555)](https://github.com/didi-build/launchpad)
 
-1. On GitHub, click **Use this template** and create your repository.
-2. Wait for the **Bootstrap** workflow on `main` to finish (runs `init-project`, commits, and applies [repo settings](./.github/scripts/bootstrap-settings.mjs)). See [docs/runbooks/bootstrap.md](./docs/runbooks/bootstrap.md). Foreman's New project form starts it with the project's display name and personal-data answer as inputs.
-3. Clone your new repo and follow [docs/new-project-checklist.md](./docs/new-project-checklist.md) for anything Bootstrap did not cover.
-4. Replace any remaining Launchpad-specific wording in docs as needed.
+<!-- launchpad-attribution:end -->
 
-> **Outside the didi-build org:** Bootstrap needs a repository secret named `BOOTSTRAP_TOKEN` (fine-grained PAT with Administration, Contents, and Issues write). Without it, the workflow warns and you use the [manual init and repo-settings steps](./docs/new-project-checklist.md) instead.
+## Layout
 
-## Layout (template)
+| Path                                                                             | Why it exists                                                                                                                               |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LICENSE`                                                                        | Project license (from `LICENSE.project` at init)                                                                                            |
+| `LICENSES/launchpad-MIT.txt`                                                     | Preserved MIT notice for Launchpad template (required by `npm run check`)                                                                   |
+| `src/`                                                                           | Application source; `src/worker/` is the Worker, the backend at `/api` ([deploy runbook](./docs/runbooks/deploy.md))                        |
+| `index.html`                                                                     | The landing page at `/` (a placeholder with the project's name and purpose until you replace it)                                            |
+| `migrations/`                                                                    | D1 migrations for the Worker's `DB` binding, applied by Foreman on staging                                                                  |
+| `design/`, `components/`, `gallery/`                                             | Designer specs (`design/<area>/<feature>/`), gallery UI, and `/gallery` route; see [docs/component-gallery.md](./docs/component-gallery.md) |
+| `test/`                                                                          | Vitest tests (script and integration tests under `test/`)                                                                                   |
+| `docs/`                                                                          | Architecture, decisions, runbooks; see [docs/README.md](./docs/README.md)                                                                   |
+| `AGENTS.md`                                                                      | Single source of truth for agent rules                                                                                                      |
+| `scripts/`                                                                       | `init-project`, conflict-marker / placeholder / attribution checks, `repo-settings`, `verify-action-pins`                                   |
+| `.github/workflows/ci.yml`, `dependabot-automerge.yml`, `.github/dependabot.yml` | CI (`npm run check`, Foreman's `preview-check`, the `staging-site` build), Dependabot config, and green Dependabot auto-merge               |
+| `.github/scripts/`                                                               | The scripts the workflows run (preview check, staging build, Bootstrap); see [ADR 0006](./docs/decisions/0006-foreman-preview-check.md)     |
+| `wrangler.jsonc`                                                                 | The Worker (`<slug>`): assets from `dist/site`, `/api` to the Worker, the D1 binding `DB` (`<slug>-staging`); no preview Worker             |
+| `.husky/`                                                                        | Fast pre-commit checks + secret scan                                                                                                        |
 
-| Path                                         | Purpose                                                                                                                                                       |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LICENSE`                                    | MIT license for the Launchpad template                                                                                                                        |
-| `LICENSE.project`                            | Proprietary license template swapped in by `init-project`                                                                                                     |
-| `LICENSES/launchpad-MIT.txt`                 | Preserved MIT notice (required by `npm run check` in derived repos)                                                                                           |
-| `README.project.md`                          | Project README template swapped in by `init-project`                                                                                                          |
-| `src/`, `test/`                              | Minimal TypeScript + Vitest example                                                                                                                           |
-| `index.html`                                 | The project's placeholder landing page at `/`, with its display name and purpose                                                                              |
-| `src/worker/`                                | The Worker: the backend at `/api` (`/api/health`), and `required-secrets.json`, the names of the secrets it needs                                             |
-| `migrations/`                                | D1 migrations for the `DB` binding, empty at first                                                                                                            |
-| `wrangler.jsonc`                             | The Worker (`<slug>`), its assets (`dist/site`), `/api` routing and the D1 binding (`<slug>-staging`, placeholder id)                                         |
-| `design/`, `components/`, `gallery/`         | Designer specs (`design/<area>/<feature>/`), gallery components, and the gallery at `/gallery` (see [docs/component-gallery.md](./docs/component-gallery.md)) |
-| `docs/`                                      | Architecture, ADRs, runbooks, new-project checklist                                                                                                           |
-| `scripts/init-project.mjs`                   | Placeholder replacement, package, Worker and database rename                                                                                                  |
-| `.github/workflows/bootstrap.yml`            | Auto `init-project` + repo settings on template create / retry; only `.github/scripts/` receives the token                                                    |
-| `.github/workflows/ci.yml`                   | PR/push CI, Foreman's `preview-check` (the site and the Worker run on CI's own machine), and the `staging-site` build                                         |
-| `.github/workflows/dependabot-automerge.yml` | Merge green Dependabot PRs (only automation exception)                                                                                                        |
-| `.github/scripts/`                           | The scripts those workflows run: Bootstrap's protected steps, the preview check and the staging build's layout                                                |
-
-## Maintainer commands
+## Commands
 
 ```bash
-npm install
-npm run check        # full gate (template skips placeholder check)
-npm run dev:gallery  # local landing page and component gallery (Vite)
-npm run build        # build the site (landing page and gallery) for Workers
-npx wrangler dev     # run the Worker and the built site locally, with a local D1 database
-npm run init-project -- <slug> "<name>" ["purpose"]   # test locally only
+npm install          # install deps and git hooks (prepare)
+npm run check        # conflict markers, format, lint, typecheck, test, secrets, placeholders, attribution
+npm run test         # vitest
+npm run build        # the site (landing page and gallery) into dist/site
+npx wrangler dev     # the Worker and the built site on localhost, with a local D1 database
+npm run test:watch   # vitest watch mode
+npm run repo-settings   # dry-run / --apply / --verify GitHub repo settings
+npm run verify-action-pins   # verify each pinned action SHA matches its # vX.Y.Z comment
 ```
 
-### The Worker, the database and secrets
+## Git hooks
 
-Every project is one Cloudflare Worker ([ADR 0007](./docs/decisions/0007-worker-backend-and-staging-build.md)): the landing page at `/` and the gallery at `/gallery` are static assets, and `src/worker/index.ts` answers `/api` (`/api/health` answers `{"status":"ok"}`). Its D1 database is bound as `DB`, with migrations in `migrations/`; the repository never holds the database's id. Secrets are listed by name only, in `src/worker/required-secrets.json`, and their values are set through Foreman's **Set project secret** form. There are no hosted pull request previews: CI's `preview-check` job builds the site, runs the Worker locally with a local database, and keeps the staging build Foreman deploys to `<slug>-staging`. See [docs/runbooks/deploy.md](./docs/runbooks/deploy.md).
+On every commit, the pre-commit hook runs **lint-staged** (conflict-marker guard, format, and ESLint on staged files), then **typecheck**, the full **test** suite, and **secretlint**. That keeps local commits aligned with CI while the project is small.
 
-## Contributing to Launchpad
+As tests grow, consider moving `npm run test` to a **pre-push** hook (or running only affected tests on commit) so commits stay fast. CI should always run the full `npm run check`.
 
-Open a PR against `didi-build/launchpad` and wait for review; do not merge your own PR unless the ticket says **merge when green**. See [AGENTS.md](./AGENTS.md) for agent rules (Dependabot auto-merge is the only exception).
+## Environment variables
+
+Copy [`.env.example`](./.env.example) to `.env` for local use. Document each name in README or `docs/architecture/`; document names only in `.env.example`; never commit values.
+
+The Worker's secrets are listed by name only in `src/worker/required-secrets.json`. Their values go on the staging Worker through Foreman's **Set project secret** form, and in `.dev.vars` (git-ignored) for `wrangler dev`; see the [deploy runbook](./docs/runbooks/deploy.md).
+
+## Adding checks or tools
+
+- Extend `package.json` scripts and add them to `check`.
+- Mirror the same command in `.husky/pre-commit` only if it stays fast (seconds).
+- Update [AGENTS.md](./AGENTS.md) command table when scripts change.
 
 ## License
 
-[MIT](./LICENSE) — Copyright (c) 2026 Didi Build. If you use this template, a link back to [Launchpad](https://github.com/didi-build/launchpad) is appreciated (derived repos get their own license via `init-project`).
+Proprietary — see [LICENSE](./LICENSE). [LICENSES/launchpad-MIT.txt](./LICENSES/launchpad-MIT.txt) preserves the MIT notice for the Launchpad template components.

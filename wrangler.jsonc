@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   // Foreman deploys staging itself as `<slug>-staging` and ignores `name`; it takes only the
   // compatibility date and flags from this file (docs/runbooks/deploy.md).
-  "name": "launchpad",
+  "name": "form-trial",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-10-26",
   "assets": {
@@ -14,7 +14,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "launchpad-staging",
+      "database_name": "form-trial-staging",
       // A placeholder for local runs (`wrangler dev`, a local SQLite file). The real id is never
       // committed: Foreman carries the staging Worker's DB binding over on each deploy.
       "database_id": "00000000-0000-0000-0000-000000000000",
