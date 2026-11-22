@@ -1,5 +1,17 @@
 schema_version: 1
-d1_tables: {}
+d1_tables:
+  trial_notes:
+    defaults:
+      whose: operational
+      data: short test notes written by hand, never personal data
+      purpose: checks that Foreman applies D1 migrations on staging (Foreman ADR 0118 slice 8)
+      storage: D1
+      processors: [Cloudflare]
+      retention: until the throwaway project is removed
+    columns:
+      id: {}
+      note: {}
+      created_at: {}
 other_items:
   - id: d1-db
     binding: DB
